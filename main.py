@@ -15,6 +15,7 @@ doc = DocxTemplate(template_path)
 class AutoOficio:
     
     def __init__(self, root):
+        '''Inicializa o aplicativo, criando a Árvore de Widgets, chamando os pais e seus filhos'''
 
         # tkinter - Dá um nome
         root.title("AutoOfício")
@@ -25,26 +26,15 @@ class AutoOficio:
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
 
-        # tkinter - Cria os campos (Widget) de entrada de dados
-        self.NOME_SOCIAL = StringVar()
-        NOME_SOCIAL_entry = ttk.Entry(mainframe, width=50, textvariable=self.NOME_SOCIAL)
-        NOME_SOCIAL_entry.grid(column=1, row=1, sticky=(W, E))
-        ttk.Label(mainframe, text="Nome Social").grid(column=0,row=1, sticky=W)
+        # Importa o FormBuilder somente agora, pra evitar erros circulares
+        from UI.form_builder import FormBuilder
 
-        self.DATA_POR_EXTENSO = StringVar()
-        DATA_POR_EXTENSO_entry = ttk.Entry(mainframe, width=50, textvariable=self.DATA_POR_EXTENSO)
-        DATA_POR_EXTENSO_entry.grid(column=1, row=2, sticky=(W, E))
-        ttk.Label(mainframe, text="Data por Extenso").grid(column=0,row=2, sticky=W)
-
-        # tkinter - Define o botão com a opção de gerar o .docx a partir do template
-        ttk.Button(mainframe, text="Gerar", command=self.gerar).grid(column=3, row=3, sticky=W)
-
-        # tkinter - Itera todos os widgets e adiciona um padding neles, para os campos não ficarem todos colados
-        for child in mainframe.winfo_children(): 
-            child.grid_configure(padx=5, pady=5)
-
-        # tkinter - Coloca o foco do cursor do teclado no primeiro widget, para que os usuários não tenham que clicar no campo para digitar
-        NOME_SOCIAL_entry.focus()
+        # Constrói os campos (widgets) na tela, chamando o FormBuilder
+        form_builder = FormBuilder(mainframe, self)
+        first_field = form_builder.build_form()
+    
+        # tkinter - Foca cursor no primeiro campo
+        first_field.focus()
 
         # tkinter - Se o usuário apertar enter, ele automaticamente gera o .docx
         root.bind("<Return>", self.gerar)
@@ -65,11 +55,11 @@ class AutoOficio:
         doc.render(context)
         doc.save(output_path)
 
-        # Espera meio segundo e abre o documento gerado para visualização
-        time.sleep(0.5)
+        # Espera 0.2s (para evitar erros) e abre o documento
+        time.sleep(0.2)
         os.startfile(output_path)
 
-# tkinter - Cria a janela principal (mainframe) da aplicação
+# tkinter - Cria a janela principal (mainframe) da aplicação, que no caso é arbitrariamente chamada de root (pattern do tkinter)
 root = Tk()
 
 # tkinter - Chama a classe principal, mandando o mainframe de parâmetro, para fazer tudo funcionar, obviamente
