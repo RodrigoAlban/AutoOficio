@@ -32,7 +32,7 @@ class FormBuilder:
         return entry
     
     def add_button(self, label, command, column=3):
-        """Adiciona o Button"""
+        """Adiciona um Button"""
         btn = ttk.Button(self.parent, text=label, command=command)
         btn.grid(column=column, row=self.row, sticky=W)
         return btn
@@ -43,7 +43,7 @@ class FormBuilder:
             child.grid_configure(padx=padx, pady=pady)
     
     def build_form(self):
-        """Constrói todos os campos e aplica todos os métodos da classe FormBuilder"""
+        """Constrói todos os campos aplicando todos os métodos da classe FormBuilder"""
         # Adiciona todos os campos
         nome_social_entry = self.add_text_field("Nome Social", "NOME_SOCIAL")
         self.add_text_field("Data por Extenso", "DATA_POR_EXTENSO")
